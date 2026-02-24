@@ -91,8 +91,8 @@ function Navigation() {
     <nav style={styles.nav}>
       <div style={styles.navBrand}>
         <div style={styles.logoWrapper} onClick={handleLogoClick}>
-          <span style={styles.logo}>⚡</span>
-          <span style={styles.brandText}>
+          <span style={{...styles.logo, ...(showSecret ? styles.logoReveal : {})}}>⚡</span>
+          <span style={{...styles.brandText, ...(showSecret ? styles.brandTextReveal : {})}}>
             {showSecret ? 'Siemens Energy Portal' : 'Voltify'}
           </span>
         </div>
@@ -297,12 +297,23 @@ const styles: Record<string, React.CSSProperties> = {
   },
   logo: {
     fontSize: '24px',
+    transition: 'all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+  },
+  logoReveal: {
+    animation: 'logoSpin 0.5s ease-out',
+    filter: 'drop-shadow(0 0 10px #ffd700)',
   },
   brandText: {
     color: '#ffffff',
     fontSize: '20px',
     fontWeight: 600,
-    transition: 'all 0.3s ease',
+    transition: 'all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+    display: 'inline-block',
+  },
+  brandTextReveal: {
+    animation: 'textReveal 0.5s ease-out',
+    color: '#ffd700',
+    textShadow: '0 0 10px rgba(255, 215, 0, 0.5), 0 0 20px rgba(255, 215, 0, 0.3)',
   },
   navLinks: {
     display: 'flex',
