@@ -1,5 +1,5 @@
 {
-  "name": "siemens-energy-portal-demo",
+  "name": "voltify-portal",
   "private": true,
   "workspaces": [
     "apps/*",

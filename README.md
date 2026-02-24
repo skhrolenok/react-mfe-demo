@@ -1,4 +1,6 @@
-# Siemens Energy Portal - Micro Frontend Demo
+# Voltify Portal - Micro Frontend Demo
+
+⚡ **Powered by Module Federation** ⚡
 
 A demonstration of Micro Frontend architecture using **Module Federation** with **Vite** and **React**.
 

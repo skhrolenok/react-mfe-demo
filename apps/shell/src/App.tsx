@@ -79,14 +79,23 @@ function TicketDashboardWidget() {
 
 function Navigation() {
   const location = useLocation();
+  const [showSecret, setShowSecret] = useState(false);
 
   const isActive = (path: string) => location.pathname === path;
+
+  const handleLogoClick = () => {
+    setShowSecret(prev => !prev);
+  };
 
   return (
     <nav style={styles.nav}>
       <div style={styles.navBrand}>
-        <span style={styles.logo}>⚡</span>
-        <span style={styles.brandText}>Siemens Energy Portal</span>
+        <div style={styles.logoWrapper} onClick={handleLogoClick}>
+          <span style={styles.logo}>⚡</span>
+          <span style={styles.brandText}>
+            {showSecret ? 'Siemens Energy Portal' : 'Voltify'}
+          </span>
+        </div>
       </div>
       <div style={styles.navLinks}>
         <Link
@@ -127,7 +136,7 @@ function HomePage() {
 
   return (
     <div style={styles.homeContainer}>
-      <Card title="Welcome to Siemens Energy Portal">
+      <Card title="⚡ Welcome to Voltify">
         <p style={styles.homeText}>
           This is a demo application showcasing Micro Frontend architecture using Module Federation.
         </p>
@@ -198,7 +207,7 @@ function MFEWrapper({ component: Component, name }: { component: React.Component
   const [error, setError] = React.useState<Error | null>(null);
   const [loading, setLoading] = React.useState(true);
 
-  React.useEffect(() => {
+  useEffect(() => {
     // MFE loaded successfully if we got here
     setLoading(false);
   }, []);
@@ -277,6 +286,15 @@ const styles: Record<string, React.CSSProperties> = {
     alignItems: 'center',
     gap: '12px',
   },
+  logoWrapper: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px',
+    cursor: 'pointer',
+    padding: '8px 12px',
+    borderRadius: '6px',
+    transition: 'background 0.2s',
+  },
   logo: {
     fontSize: '24px',
   },
@@ -284,6 +302,7 @@ const styles: Record<string, React.CSSProperties> = {
     color: '#ffffff',
     fontSize: '20px',
     fontWeight: 600,
+    transition: 'all 0.3s ease',
   },
   navLinks: {
     display: 'flex',
