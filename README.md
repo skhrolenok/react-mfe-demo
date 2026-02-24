@@ -113,37 +113,43 @@ The shell app needs to know where to find the MFEs. Set these environment variab
 - `VITE_MFE_USER_URL` - URL of User Management MFE
 - `VITE_MFE_TICKET_URL` - URL of Ticketing MFE
 
-**Option 1: Deploy each MFE separately (Recommended)**
+**Render.com Note:** 
+- Render automatically assigns `PORT=10000` to all web services
+- Each MFE should be deployed as a **separate service** with its own domain
+- All services use port 10000 internally, but have different public URLs
 
-For each app (shell, mfe-user-management, mfe-ticketing):
+**Option 1: Deploy each MFE separately (Recommended for Render.com)**
 
-1. Create `.env` file or set environment variables in hosting platform:
-```bash
-# For Shell app
-VITE_MFE_USER_URL=https://your-mfe-user-app.onrender.com
-VITE_MFE_TICKET_URL=https://your-mfe-ticket-app.onrender.com
-```
+Create 3 separate web services on Render:
 
-2. Build the app:
-```bash
-npm run build --workspace=shell
-```
+1. **Shell Service**
+   - Build Command: `npm install && npm run build --workspace=shell`
+   - Start Command: `cd apps/shell && node server.js`
+   - Environment Variables:
+     ```
+     VITE_MFE_USER_URL=https://your-mfe-user-management.onrender.com
+     VITE_MFE_TICKET_URL=https://your-mfe-ticketing.onrender.com
+     ```
+   - Render will assign PORT=10000 automatically
 
-3. Deploy the `dist` folder + `server.js` + `package.json`
+2. **User Management MFE Service**
+   - Build Command: `npm install && npm run build --workspace=mfe-user-management`
+   - Start Command: `cd apps/mfe-user-management && node server.js`
+   - Environment Variables: (none required, PORT=10000 auto-assigned)
 
-4. Set start command:
-```bash
-node server.js
-```
+3. **Ticketing MFE Service**
+   - Build Command: `npm install && npm run build --workspace=mfe-ticketing`
+   - Start Command: `cd apps/mfe-ticketing && node server.js`
+   - Environment Variables: (none required, PORT=10000 auto-assigned)
 
-5. Set environment variables in hosting platform dashboard
+**Option 2: Deploy as monorepo (Single VPS/Docker)**
 
-**Option 2: Deploy as monorepo**
+For deployments where you control the ports (VPS, Docker, etc.):
 
 1. Set environment variables:
 ```bash
-export VITE_MFE_USER_URL=https://mfe-user-management.onrender.com
-export VITE_MFE_TICKET_URL=https://mfe-ticketing.onrender.com
+export VITE_MFE_USER_URL=https://mfe-user-management.yourdomain.com
+export VITE_MFE_TICKET_URL=https://mfe-ticketing.yourdomain.com
 ```
 
 2. Build all:
@@ -151,22 +157,22 @@ export VITE_MFE_TICKET_URL=https://mfe-ticketing.onrender.com
 npm run build
 ```
 
-3. Set start command:
+3. Start all (each on its own port):
 ```bash
 npm run start
 ```
 
-**render.yaml example:**
+**render.yaml example (3 separate services):**
 ```yaml
 services:
   - type: web
     name: shell
     env: node
+    region: oregon
+    plan: starter
     buildCommand: npm install && npm run build --workspace=shell
-    startCommand: cd apps/shell && npm run start
+    startCommand: cd apps/shell && node server.js
     envVars:
-      - key: PORT
-        value: 3000
       - key: VITE_MFE_USER_URL
         value: https://mfe-user-management.onrender.com
       - key: VITE_MFE_TICKET_URL
@@ -175,20 +181,37 @@ services:
   - type: web
     name: mfe-user-management
     env: node
+    region: oregon
+    plan: starter
     buildCommand: npm install && npm run build --workspace=mfe-user-management
-    startCommand: cd apps/mfe-user-management && npm run start
-    envVars:
-      - key: PORT
-        value: 3001
+    startCommand: cd apps/mfe-user-management && node server.js
 
   - type: web
     name: mfe-ticketing
     env: node
+    region: oregon
+    plan: starter
     buildCommand: npm install && npm run build --workspace=mfe-ticketing
-    startCommand: cd apps/mfe-ticketing && npm run start
-    envVars:
-      - key: PORT
-        value: 3002
+    startCommand: cd apps/mfe-ticketing && node server.js
+```
+
+**Docker Deployment (all services in one container):**
+
+```dockerfile
+FROM node:18-alpine
+
+WORKDIR /app
+COPY package*.json ./
+COPY apps/ ./apps/
+COPY packages/ ./packages/
+COPY turbo.json ./
+
+RUN npm install
+RUN npm run build
+
+EXPOSE 3000 3001 3002
+
+CMD ["npm", "run", "start"]
 ```
 
 **Environment-specific builds:**
