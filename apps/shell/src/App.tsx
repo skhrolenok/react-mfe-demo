@@ -279,7 +279,7 @@ const styles: Record<string, React.CSSProperties> = {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+    boxShadow: '0 2px 8px rgba(0,153,153,0.3)',
   },
   navBrand: {
     display: 'flex',
@@ -293,7 +293,10 @@ const styles: Record<string, React.CSSProperties> = {
     cursor: 'pointer',
     padding: '8px 12px',
     borderRadius: '6px',
-    transition: 'background 0.2s',
+    transition: 'all 0.2s',
+  },
+  logoWrapperActive: {
+    background: 'rgba(255,255,255,0.2)',
   },
   logo: {
     fontSize: '24px',
@@ -326,7 +329,8 @@ const styles: Record<string, React.CSSProperties> = {
     transition: 'background-color 0.2s',
   },
   navLinkActive: {
-    backgroundColor: 'rgba(255,255,255,0.2)',
+    backgroundColor: 'rgba(255,255,255,0.25)',
+    color: '#ffffff',
   },
   main: {
     flex: 1,
@@ -334,6 +338,7 @@ const styles: Record<string, React.CSSProperties> = {
     maxWidth: '1200px',
     margin: '0 auto',
     width: '100%',
+    backgroundColor: '#f8f9fa',
   },
   homeContainer: {
     marginTop: '24px',
@@ -347,9 +352,10 @@ const styles: Record<string, React.CSSProperties> = {
     display: 'flex',
     gap: '24px',
     padding: '16px',
-    backgroundColor: '#f8f9fa',
+    backgroundColor: '#ffffff',
     borderRadius: '8px',
     marginBottom: '20px',
+    border: '1px solid #e0e0e0',
   },
   toggleLabel: {
     display: 'flex',
@@ -357,7 +363,7 @@ const styles: Record<string, React.CSSProperties> = {
     gap: '8px',
     fontSize: '14px',
     fontWeight: 500,
-    color: '#495057',
+    color: '#333333',
     cursor: 'pointer',
   },
   checkbox: {
@@ -380,8 +386,9 @@ const styles: Record<string, React.CSSProperties> = {
   statCard: {
     textAlign: 'center',
     padding: '16px',
-    backgroundColor: '#f8f9fa',
+    backgroundColor: '#ffffff',
     borderRadius: '8px',
+    border: '1px solid #e0e0e0',
   },
   statValue: {
     fontSize: '28px',
@@ -391,13 +398,13 @@ const styles: Record<string, React.CSSProperties> = {
   },
   statLabel: {
     fontSize: '12px',
-    color: '#6c757d',
+    color: '#879baa',
     textTransform: 'uppercase',
     letterSpacing: '0.5px',
   },
   widgetFooter: {
     paddingTop: '16px',
-    borderTop: '1px solid #e9ecef',
+    borderTop: '1px solid #e0e0e0',
   },
   viewAllLink: {
     display: 'inline-block',
@@ -414,7 +421,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   errorState: {
     padding: '20px',
-    color: '#dc3545',
+    color: '#E1281E',
     textAlign: 'center' as const,
   },
   emptyWidget: {
@@ -423,14 +430,14 @@ const styles: Record<string, React.CSSProperties> = {
     flexDirection: 'column' as const,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f8f9fa',
+    backgroundColor: '#ffffff',
     borderRadius: '8px',
-    border: '2px dashed #dee2e6',
+    border: '2px dashed #cccccc',
     minHeight: '250px',
   },
   emptyHint: {
     fontSize: '13px',
-    color: '#6c757d',
+    color: '#879baa',
     marginTop: '8px',
   },
   loadingContainer: {
@@ -446,11 +453,11 @@ const styles: Record<string, React.CSSProperties> = {
   errorContainer: {
     padding: '24px',
     textAlign: 'center',
-    color: '#dc3545',
+    color: '#E1281E',
   },
   errorText: {
     fontSize: '14px',
-    color: '#6c757d',
+    color: '#879baa',
     marginTop: '8px',
   },
 };

@@ -83,15 +83,16 @@ const styles: Record<string, React.CSSProperties> = {
   card: {
     backgroundColor: '#ffffff',
     borderRadius: '8px',
-    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
     padding: '16px',
     marginBottom: '16px',
+    border: '1px solid #e0e0e0',
   },
   cardTitle: {
     margin: '0 0 12px 0',
     fontSize: '18px',
     fontWeight: 600,
-    color: '#1a1a1a',
+    color: '#333333',
   },
   cardContent: {
     color: '#4a4a4a',
@@ -110,11 +111,12 @@ const styles: Record<string, React.CSSProperties> = {
     color: '#ffffff',
   },
   buttonSecondary: {
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#f5f7fa',
     color: '#333333',
+    border: '1px solid #e0e0e0',
   },
   buttonDanger: {
-    backgroundColor: '#dc3545',
+    backgroundColor: '#E1281E',
     color: '#ffffff',
   },
   buttonDisabled: {
@@ -129,24 +131,24 @@ const styles: Record<string, React.CSSProperties> = {
     fontWeight: 500,
   },
   badgeGreen: {
-    backgroundColor: '#d4edda',
-    color: '#155724',
+    backgroundColor: '#e8f5e9',
+    color: '#2e7d32',
   },
   badgeYellow: {
-    backgroundColor: '#fff3cd',
-    color: '#856404',
+    backgroundColor: '#fff8e1',
+    color: '#f57f17',
   },
   badgeRed: {
-    backgroundColor: '#f8d7da',
-    color: '#721c24',
+    backgroundColor: '#ffebee',
+    color: '#c62828',
   },
   badgeBlue: {
-    backgroundColor: '#d1ecf1',
-    color: '#0c5460',
+    backgroundColor: '#e3f2fd',
+    color: '#1565c0',
   },
   badgeGray: {
-    backgroundColor: '#e9ecef',
-    color: '#495057',
+    backgroundColor: '#f5f7fa',
+    color: '#879baa',
   },
   spinner: {
     display: 'flex',
@@ -156,7 +158,7 @@ const styles: Record<string, React.CSSProperties> = {
   spinnerCircle: {
     width: '24px',
     height: '24px',
-    border: '3px solid #f3f3f3',
+    border: '3px solid #f5f7fa',
     borderTop: '3px solid #009999',
     borderRadius: '50%',
     animation: 'spin 1s linear infinite',
