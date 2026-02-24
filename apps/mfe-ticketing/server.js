@@ -6,7 +6,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3002; // Default port for Ticketing MFE
 
 // Expose environment variables to client-side via /env-config.js endpoint
 app.get('/env-config.js', (req, res) => {
@@ -28,7 +28,6 @@ app.get('*', (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Production server running on http://localhost:${PORT}`);
-  console.log(`MFE User URL: ${process.env.VITE_MFE_USER_URL || 'http://localhost:3001'}`);
-  console.log(`MFE Ticket URL: ${process.env.VITE_MFE_TICKET_URL || 'http://localhost:3002'}`);
+  console.log(`Ticketing MFE server running on http://localhost:${PORT}`);
+  console.log(`MFE Ticket URL: ${process.env.VITE_MFE_TICKET_URL || `http://localhost:${PORT}`}`);
 });
