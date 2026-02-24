@@ -1,0 +1,24 @@
+{
+  "name": "siemens-energy-portal-demo",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run build && npm run serve",
+    "build": "turbo build",
+    "serve": "npm run serve:shell & npm run serve:mfe-users & npm run serve:mfe-ticketing",
+    "serve:shell": "serve apps/shell/dist -p 3000 --cors -s",
+    "serve:mfe-users": "serve apps/mfe-user-management/dist -p 3001 --cors -s",
+    "serve:mfe-ticketing": "serve apps/mfe-ticketing/dist -p 3002 --cors -s",
+    "lint": "turbo lint",
+    "test": "turbo test",
+    "clean": "rm -rf node_modules apps/*/node_modules apps/*/dist .turbo"
+  },
+  "devDependencies": {
+    "turbo": "^2.4.0",
+    "serve": "^14.2.0"
+  },
+  "packageManager": "npm@10.2.3"
+}
