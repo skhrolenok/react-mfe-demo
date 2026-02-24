@@ -42,7 +42,7 @@ react-mfe-demo/
 
 ### Prerequisites
 
-- Node.js 18+ 
+- Node.js 18+
 - npm 9+
 
 ### Installation
@@ -52,51 +52,79 @@ cd react-mfe-demo
 npm install
 ```
 
-### Development (Build + Serve)
+## Development
+
+### Build + Serve All Apps
 
 **Single command to build and serve all apps:**
 
 ```bash
 npm run dev
-# This will:
-# 1. Build all apps (shell + MFEs)
-# 2. Start servers on ports 3000, 3001, 3002
-# 
-# Access at:
-# - Shell: http://localhost:3000
-# - User MFE: http://localhost:3001
-# - Ticketing MFE: http://localhost:3002
 ```
 
-> **Note:** Module Federation with Vite requires building before serving. The `npm run dev` command now handles both steps automatically.
+This will:
+1. Build all apps (shell + MFEs)
+2. Start servers on ports 3000, 3001, 3002
 
-### Production Deployment
+**Access at:**
+- Shell: http://localhost:3000
+- User MFE: http://localhost:3001
+- Ticketing MFE: http://localhost:3002
 
-**For production (with proper SPA routing):**
+> **Note:** Module Federation with Vite requires building before serving. The `npm run dev` command handles both steps automatically.
+
+### Individual Development Commands
 
 ```bash
-# 1. Set environment variables for MFE URLs
-export VITE_MFE_USER_URL=https://mfe-user-management.onrender.com
-export VITE_MFE_TICKET_URL=https://mfe-ticketing.onrender.com
-
-# 2. Build all apps (will use production MFE URLs)
+# Build all apps
 npm run build
 
-# 3. Start production servers (Express with SPA routing)
+# Serve all built apps (after build)
+npm run serve
+
+# Build specific app
+npm run build --workspace=shell
+npm run build --workspace=mfe-user-management
+npm run build --workspace=mfe-ticketing
+
+# Start specific app (production)
+npm run start --workspace=shell
+npm run start --workspace=mfe-user-management
+npm run start --workspace=mfe-ticketing
+
+# Lint all
+npm run lint
+
+# Test all
+npm run test
+
+# Clean all (remove node_modules and builds)
+npm run clean
+```
+
+## Production Deployment
+
+### Start Production Servers
+
+```bash
+# 1. Build all apps
+npm run build
+
+# 2. Start production servers (Express with SPA routing)
 npm run start
 ```
 
 This starts Express.js servers that:
 - Serve static files from `dist/` directories
 - Handle client-side routing (all routes → `index.html`)
-- Use production MFE URLs (not localhost!)
 - Work correctly with refresh on any route
 
-**Environment Variables:**
+### Environment Variables
+
 ```bash
-# Shell app (required)
-VITE_MFE_USER_URL=https://mfe-user-management.onrender.com
-VITE_MFE_TICKET_URL=https://mfe-ticketing.onrender.com
+# Shell app (required for production MFE URLs)
+VITE_MFE_USER_URL=https://mfe-user-management.yourdomain.com
+VITE_MFE_TICKET_URL=https://mfe-ticketing.yourdomain.com
 PORT=3000
 
 # MFE User Management
@@ -106,98 +134,33 @@ PORT=3001
 PORT=3002
 ```
 
-### Deployment to Render.com / Other Hosting
+### Deployment Steps
 
-**Important: Configure MFE URLs**
-
-The shell app needs to know where to find the MFEs. Set these environment variables when deploying:
-
-- `VITE_MFE_USER_URL` - URL of User Management MFE
-- `VITE_MFE_TICKET_URL` - URL of Ticketing MFE
-
-**Render.com Note:** 
-- Render automatically assigns `PORT=10000` to all web services
-- Each MFE should be deployed as a **separate service** with its own domain
-- All services use port 10000 internally, but have different public URLs
-
-**Option 1: Deploy each MFE separately (Recommended for Render.com)**
-
-Create 3 separate web services on Render:
-
-1. **Shell Service**
-   - Build Command: `npm install && npm run build --workspace=shell`
-   - Start Command: `cd apps/shell && node server.js`
-   - Environment Variables:
-     ```
-     VITE_MFE_USER_URL=https://your-mfe-user-management.onrender.com
-     VITE_MFE_TICKET_URL=https://your-mfe-ticketing.onrender.com
-     ```
-   - Render will assign PORT=10000 automatically
-
-2. **User Management MFE Service**
-   - Build Command: `npm install && npm run build --workspace=mfe-user-management`
-   - Start Command: `cd apps/mfe-user-management && node server.js`
-   - Environment Variables: (none required, PORT=10000 auto-assigned)
-
-3. **Ticketing MFE Service**
-   - Build Command: `npm install && npm run build --workspace=mfe-ticketing`
-   - Start Command: `cd apps/mfe-ticketing && node server.js`
-   - Environment Variables: (none required, PORT=10000 auto-assigned)
-
-**Option 2: Deploy as monorepo (Single VPS/Docker)**
-
-For deployments where you control the ports (VPS, Docker, etc.):
-
-1. Set environment variables:
+1. **Set environment variables for MFE URLs:**
 ```bash
 export VITE_MFE_USER_URL=https://mfe-user-management.yourdomain.com
 export VITE_MFE_TICKET_URL=https://mfe-ticketing.yourdomain.com
 ```
 
-2. Build all:
+2. **Build all apps:**
 ```bash
 npm run build
 ```
 
-3. Start all (each on its own port):
+3. **Start all services:**
 ```bash
 npm run start
 ```
 
-**render.yaml example (3 separate services):**
-```yaml
-services:
-  - type: web
-    name: shell
-    env: node
-    region: oregon
-    plan: starter
-    buildCommand: npm install && npm run build --workspace=shell
-    startCommand: cd apps/shell && node server.js
-    envVars:
-      - key: VITE_MFE_USER_URL
-        value: https://mfe-user-management.onrender.com
-      - key: VITE_MFE_TICKET_URL
-        value: https://mfe-ticketing.onrender.com
+### Deploy Individual MFEs
 
-  - type: web
-    name: mfe-user-management
-    env: node
-    region: oregon
-    plan: starter
-    buildCommand: npm install && npm run build --workspace=mfe-user-management
-    startCommand: cd apps/mfe-user-management && node server.js
-
-  - type: web
-    name: mfe-ticketing
-    env: node
-    region: oregon
-    plan: starter
-    buildCommand: npm install && npm run build --workspace=mfe-ticketing
-    startCommand: cd apps/mfe-ticketing && node server.js
+```bash
+# Build and deploy specific MFE
+npm run build --workspace=mfe-user-management
+npm run start --workspace=mfe-user-management
 ```
 
-**Docker Deployment (all services in one container):**
+### Docker Deployment
 
 ```dockerfile
 FROM node:18-alpine
@@ -216,73 +179,16 @@ EXPOSE 3000 3001 3002
 CMD ["npm", "run", "start"]
 ```
 
-**Environment-specific builds:**
+## Navigation
 
-```bash
-# Development
-npm run build
-
-# Staging
-VITE_MFE_USER_URL=https://staging-user.onrender.com \
-VITE_MFE_TICKET_URL=https://staging-ticket.onrender.com \
-npm run build
-
-# Production
-VITE_MFE_USER_URL=https://prod-user.onrender.com \
-VITE_MFE_TICKET_URL=https://prod-ticket.onrender.com \
-npm run build
-```
-
-### Individual Commands
-
-```bash
-# Build all apps
-npm run build
-
-# Serve all built apps (after build) - dev mode
-npm run serve
-
-# Start production servers (Express with SPA routing)
-npm run start
-
-# Build specific app
-npm run build --workspace=shell
-npm run build --workspace=mfe-user-management
-npm run build --workspace=mfe-ticketing
-
-# Start specific app (production)
-npm run start --workspace=shell
-npm run start --workspace=mfe-user-management
-npm run start --workspace=mfe-ticketing
-
-# Clean all (remove node_modules and builds)
-npm run clean
-```
-
-## Features
-
-### User Management MFE
-- List of users with mock data
-- Filter by status (Active/Inactive)
-- User cards with avatar, role, and department
-- Role badges (Admin, Manager, User)
-
-### Ticketing MFE
-- List of tickets in progress
-- Filter by priority (High/Medium/Low)
-- Ticket details with description
-- Priority and status badges
-- Responsive table layout
-
-### Shared UI Kit
-- Card component
-- Button component (Primary, Secondary, Danger)
-- Badge component (Green, Yellow, Red, Blue, Gray)
-- Spinner component
+- **Home**: `/` - Portal landing page
+- **Users**: `/users` - User Management MFE
+- **Tickets**: `/tickets` - Ticketing MFE
 
 ## Module Federation Configuration
 
 ### Shell (Host)
+
 ```js
 new ModuleFederationPlugin({
   name: 'shell',
@@ -298,6 +204,7 @@ new ModuleFederationPlugin({
 ```
 
 ### MFEs (Remotes)
+
 ```js
 new ModuleFederationPlugin({
   name: 'mfe_user_management',
@@ -311,32 +218,3 @@ new ModuleFederationPlugin({
   },
 })
 ```
-
-## Navigation
-
-- **Home**: `/` - Portal landing page
-- **Users**: `/users` - User Management MFE
-- **Tickets**: `/tickets` - Ticketing MFE
-
-## Mock Data
-
-### Users
-- 6 sample users with different roles and departments
-- Status: Active/Inactive
-
-### Tickets
-- 6 tickets in progress
-- Priorities: High, Medium, Low
-- Assigned to different users
-
-## Benefits of Module Federation over Iframe
-
-1. **Shared Dependencies**: React loaded once, not per MFE
-2. **Seamless Integration**: MFEs render as native components
-3. **Better UX**: No iframe scroll issues, unified styling
-4. **Performance**: Smaller bundle size, faster load times
-5. **Type Safety**: Shared TypeScript types across MFEs
-
-## License
-
-MIT
