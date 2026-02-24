@@ -12,6 +12,10 @@
     "serve:shell": "serve apps/shell/dist -p 3000 --cors -s",
     "serve:mfe-users": "serve apps/mfe-user-management/dist -p 3001 --cors -s",
     "serve:mfe-ticketing": "serve apps/mfe-ticketing/dist -p 3002 --cors -s",
+    "start": "npm run start:shell & npm run start:mfe-users & npm run start:mfe-ticketing",
+    "start:shell": "npm run start --workspace=shell",
+    "start:mfe-users": "npm run start --workspace=mfe-user-management",
+    "start:mfe-ticketing": "npm run start --workspace=mfe-ticketing",
     "lint": "turbo lint",
     "test": "turbo test",
     "clean": "rm -rf node_modules apps/*/node_modules apps/*/dist .turbo"

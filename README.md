@@ -68,19 +68,167 @@ npm run dev
 
 > **Note:** Module Federation with Vite requires building before serving. The `npm run dev` command now handles both steps automatically.
 
+### Production Deployment
+
+**For production (with proper SPA routing):**
+
+```bash
+# 1. Set environment variables for MFE URLs
+export VITE_MFE_USER_URL=https://mfe-user-management.onrender.com
+export VITE_MFE_TICKET_URL=https://mfe-ticketing.onrender.com
+
+# 2. Build all apps (will use production MFE URLs)
+npm run build
+
+# 3. Start production servers (Express with SPA routing)
+npm run start
+```
+
+This starts Express.js servers that:
+- Serve static files from `dist/` directories
+- Handle client-side routing (all routes → `index.html`)
+- Use production MFE URLs (not localhost!)
+- Work correctly with refresh on any route
+
+**Environment Variables:**
+```bash
+# Shell app (required)
+VITE_MFE_USER_URL=https://mfe-user-management.onrender.com
+VITE_MFE_TICKET_URL=https://mfe-ticketing.onrender.com
+PORT=3000
+
+# MFE User Management
+PORT=3001
+
+# MFE Ticketing
+PORT=3002
+```
+
+### Deployment to Render.com / Other Hosting
+
+**Important: Configure MFE URLs**
+
+The shell app needs to know where to find the MFEs. Set these environment variables when deploying:
+
+- `VITE_MFE_USER_URL` - URL of User Management MFE
+- `VITE_MFE_TICKET_URL` - URL of Ticketing MFE
+
+**Option 1: Deploy each MFE separately (Recommended)**
+
+For each app (shell, mfe-user-management, mfe-ticketing):
+
+1. Create `.env` file or set environment variables in hosting platform:
+```bash
+# For Shell app
+VITE_MFE_USER_URL=https://your-mfe-user-app.onrender.com
+VITE_MFE_TICKET_URL=https://your-mfe-ticket-app.onrender.com
+```
+
+2. Build the app:
+```bash
+npm run build --workspace=shell
+```
+
+3. Deploy the `dist` folder + `server.js` + `package.json`
+
+4. Set start command:
+```bash
+node server.js
+```
+
+5. Set environment variables in hosting platform dashboard
+
+**Option 2: Deploy as monorepo**
+
+1. Set environment variables:
+```bash
+export VITE_MFE_USER_URL=https://mfe-user-management.onrender.com
+export VITE_MFE_TICKET_URL=https://mfe-ticketing.onrender.com
+```
+
+2. Build all:
+```bash
+npm run build
+```
+
+3. Set start command:
+```bash
+npm run start
+```
+
+**render.yaml example:**
+```yaml
+services:
+  - type: web
+    name: shell
+    env: node
+    buildCommand: npm install && npm run build --workspace=shell
+    startCommand: cd apps/shell && npm run start
+    envVars:
+      - key: PORT
+        value: 3000
+      - key: VITE_MFE_USER_URL
+        value: https://mfe-user-management.onrender.com
+      - key: VITE_MFE_TICKET_URL
+        value: https://mfe-ticketing.onrender.com
+
+  - type: web
+    name: mfe-user-management
+    env: node
+    buildCommand: npm install && npm run build --workspace=mfe-user-management
+    startCommand: cd apps/mfe-user-management && npm run start
+    envVars:
+      - key: PORT
+        value: 3001
+
+  - type: web
+    name: mfe-ticketing
+    env: node
+    buildCommand: npm install && npm run build --workspace=mfe-ticketing
+    startCommand: cd apps/mfe-ticketing && npm run start
+    envVars:
+      - key: PORT
+        value: 3002
+```
+
+**Environment-specific builds:**
+
+```bash
+# Development
+npm run build
+
+# Staging
+VITE_MFE_USER_URL=https://staging-user.onrender.com \
+VITE_MFE_TICKET_URL=https://staging-ticket.onrender.com \
+npm run build
+
+# Production
+VITE_MFE_USER_URL=https://prod-user.onrender.com \
+VITE_MFE_TICKET_URL=https://prod-ticket.onrender.com \
+npm run build
+```
+
 ### Individual Commands
 
 ```bash
 # Build all apps
 npm run build
 
-# Serve all built apps (after build)
+# Serve all built apps (after build) - dev mode
 npm run serve
+
+# Start production servers (Express with SPA routing)
+npm run start
 
 # Build specific app
 npm run build --workspace=shell
 npm run build --workspace=mfe-user-management
 npm run build --workspace=mfe-ticketing
+
+# Start specific app (production)
+npm run start --workspace=shell
+npm run start --workspace=mfe-user-management
+npm run start --workspace=mfe-ticketing
 
 # Clean all (remove node_modules and builds)
 npm run clean
